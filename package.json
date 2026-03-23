@@ -1,0 +1,32 @@
+{
+  "name": "llm-council",
+  "version": "1.0.0",
+  "description": "Multi-LLM deliberation council — MCP server + Claude Code skill",
+  "type": "module",
+  "main": "dist/server.js",
+  "bin": {
+    "llm-council": "dist/cli.js",
+    "llm-council-broker": "dist/broker.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/server.js",
+    "broker": "node dist/broker.js",
+    "test": "node --test dist/test.js",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@google/genai": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "openai": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
