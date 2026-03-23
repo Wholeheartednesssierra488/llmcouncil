@@ -42,7 +42,7 @@ function parseJson(raw: string): unknown | null {
   }
 }
 
-// ── Route handlers ────────────────────────────────────────────────────
+// Route handlers
 
 function handleRegister(body: Record<string, unknown>, res: http.ServerResponse): void {
   const { id, pid, cwd, gitRoot, summary, models } = body;
@@ -160,7 +160,7 @@ function handleHealth(res: http.ServerResponse): void {
   });
 }
 
-// ── Dead peer cleanup ─────────────────────────────────────────────────
+// Dead peer cleanup
 
 function cleanupDeadPeers(): void {
   const now = Date.now();
@@ -182,7 +182,7 @@ function cleanupDeadPeers(): void {
   }
 }
 
-// ── Server ────────────────────────────────────────────────────────────
+// Server
 
 export function startBroker(): http.Server {
   const server = http.createServer(async (req, res) => {
@@ -195,7 +195,7 @@ export function startBroker(): http.Server {
       if (method === "GET") {
         if (path === "/health") return handleHealth(res);
         if (path === "/peers") return handleGetPeers(url, res);
-        if (path === "/poll-messages") return handlePollMessages(url, res);
+        if (path === "/pollMessages") return handlePollMessages(url, res);
         jsonResponse(res, 404, { error: "Not found" });
         return;
       }
@@ -212,8 +212,8 @@ export function startBroker(): http.Server {
 
         if (path === "/register") return handleRegister(obj, res);
         if (path === "/unregister") return handleUnregister(obj, res);
-        if (path === "/send-message") return handleSendMessage(obj, res);
-        if (path === "/set-summary") return handleSetSummary(obj, res);
+        if (path === "/sendMessage") return handleSendMessage(obj, res);
+        if (path === "/setSummary") return handleSetSummary(obj, res);
         jsonResponse(res, 404, { error: "Not found" });
         return;
       }
@@ -235,7 +235,7 @@ export function startBroker(): http.Server {
   return server;
 }
 
-// ── Entry point ───────────────────────────────────────────────────────
+// Entry point
 
 const server = startBroker();
 process.on("SIGINT", () => { server.close(); process.exit(0); });
