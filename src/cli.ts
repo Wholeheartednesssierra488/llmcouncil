@@ -5,7 +5,7 @@ import { DEFAULT_MODELS, DEFAULT_CHAIRMAN } from "./types.js";
 
 const BROKER_URL = "http://127.0.0.1:7899";
 
-// ── ANSI colors ───────────────────────────────────────────────────────
+// ANSI colors
 
 const c = {
   reset: "\x1b[0m",
@@ -19,7 +19,7 @@ const c = {
   white: "\x1b[37m",
 };
 
-// ── Arg parsing ───────────────────────────────────────────────────────
+// Arg parsing
 
 function getFlag(args: string[], name: string): string | undefined {
   const idx = args.indexOf(name);
@@ -31,7 +31,7 @@ function hasFlag(args: string[], name: string): boolean {
   return args.includes(name);
 }
 
-// ── HTTP helper ───────────────────────────────────────────────────────
+// HTTP helper
 
 async function brokerGet(path: string): Promise<unknown> {
   const res = await fetch(`${BROKER_URL}${path}`);
@@ -42,7 +42,7 @@ async function brokerGet(path: string): Promise<unknown> {
   return res.json();
 }
 
-// ── Commands ──────────────────────────────────────────────────────────
+// Commands
 
 async function cmdBroker(): Promise<void> {
   console.log(`${c.cyan}${c.bold}LLM Council Broker${c.reset}`);
@@ -62,7 +62,7 @@ async function cmdStatus(): Promise<void> {
     console.log(`  Peers:   ${c.yellow}${data.peers}${c.reset}`);
     console.log(`  Uptime:  ${c.dim}${formatUptime(data.uptime)}${c.reset}`);
   } catch {
-    console.log(`${c.red}${c.bold}Broker offline${c.reset} — start it with ${c.dim}node dist/broker.js${c.reset}`);
+    console.log(`${c.red}${c.bold}Broker offline${c.reset}. Start it with ${c.dim}node dist/broker.js${c.reset}`);
     process.exit(1);
   }
 }
@@ -99,12 +99,12 @@ async function cmdPeers(args: string[]): Promise<void> {
     for (const p of data.peers) {
       const id = p.id.length > 18 ? p.id.slice(0, 18) + ".." : p.id;
       const cwd = p.cwd.length > 28 ? ".." + p.cwd.slice(-26) : p.cwd;
-      const summary = (p.summary ?? "-").slice(0, 28);
+      const summary = (p.summary ?? "n/a").slice(0, 28);
       console.log(`  ${c.green}${id.padEnd(20)}${c.reset} ${String(p.pid).padEnd(8)} ${cwd.padEnd(30)} ${c.dim}${summary}${c.reset}`);
     }
     console.log();
   } catch {
-    console.log(`${c.red}${c.bold}Broker offline${c.reset} — start it with ${c.dim}node dist/broker.js${c.reset}`);
+    console.log(`${c.red}${c.bold}Broker offline${c.reset}. Start it with ${c.dim}node dist/broker.js${c.reset}`);
     process.exit(1);
   }
 }
@@ -113,12 +113,12 @@ async function cmdAsk(args: string[]): Promise<void> {
   const questionIdx = args.indexOf("ask") + 1;
   const question = args[questionIdx];
   if (!question) {
-    console.error(`${c.red}Usage: llm-council ask "<question>" [--protocol vote|debate|synthesize|critique|red-team|mav]${c.reset}`);
+    console.error(`${c.red}Usage: llmcouncil ask "<question>" [--protocol vote|debate|synthesize|critique|redteam|mav]${c.reset}`);
     process.exit(1);
   }
 
   const protocol = (getFlag(args, "--protocol") ?? "synthesize") as Protocol;
-  const validProtocols: Protocol[] = ["vote", "debate", "synthesize", "critique", "red-team", "mav"];
+  const validProtocols: Protocol[] = ["vote", "debate", "synthesize", "critique", "redteam", "mav"];
   if (!validProtocols.includes(protocol)) {
     console.error(`${c.red}Invalid protocol: ${protocol}. Must be one of: ${validProtocols.join(", ")}${c.reset}`);
     process.exit(1);
@@ -177,7 +177,7 @@ async function cmdCost(args: string[]): Promise<void> {
   // Base model calls
   const baseCost = tracker.estimateCost(DEFAULT_MODELS, avgInput, avgOutput, 1);
 
-  // Protocol-specific multipliers
+  // Protocol specific multipliers
   let multiplier = 1;
   let description = "";
   switch (protocol) {
@@ -197,12 +197,12 @@ async function cmdCost(args: string[]): Promise<void> {
       multiplier = 2; // responses + critiques
       description = "initial responses + critiques";
       break;
-    case "red-team":
-      multiplier = 3; // responses + critiques + red-team
-      description = "initial responses + critiques + red-team";
+    case "redteam":
+      multiplier = 3; // responses + critiques + redteam
+      description = "initial responses + critiques + redteam";
       break;
     case "mav":
-      multiplier = 2.5; // responses + multi-agent verification
+      multiplier = 2.5; // responses + multiagent verification
       description = "initial responses + verification passes";
       break;
   }
@@ -218,7 +218,7 @@ async function cmdCost(args: string[]): Promise<void> {
   console.log(`  ${c.bold}Estimated cost: ${c.green}$${estimated.toFixed(4)}${c.reset} per query`);
   console.log();
 
-  // Per-model breakdown
+  // Per model breakdown
   console.log(`  ${c.bold}${"Model".padEnd(35)} ${"$/query".padEnd(10)}${c.reset}`);
   console.log(`  ${c.dim}${"─".repeat(45)}${c.reset}`);
   for (const m of DEFAULT_MODELS) {
@@ -229,10 +229,10 @@ async function cmdCost(args: string[]): Promise<void> {
 
 function cmdHelp(): void {
   console.log(`
-${c.cyan}${c.bold}llm-council${c.reset} — Multi-LLM deliberation council
+${c.cyan}${c.bold}llmcouncil${c.reset} Multi LLM deliberation council
 
 ${c.bold}Usage:${c.reset}
-  llm-council <command> [options]
+  llmcouncil <command> [options]
 
 ${c.bold}Commands:${c.reset}
   ${c.green}broker${c.reset}                              Start the peer discovery broker
@@ -242,16 +242,16 @@ ${c.bold}Commands:${c.reset}
   ${c.green}cost${c.reset}   [--protocol P] [--rounds N]  Estimate query cost
   ${c.green}help${c.reset}                                Show this help
 
-${c.bold}Protocols:${c.reset}  vote, debate, synthesize, critique, red-team, mav
+${c.bold}Protocols:${c.reset}  vote, debate, synthesize, critique, redteam, mav
 
 ${c.bold}Examples:${c.reset}
-  ${c.dim}llm-council status${c.reset}
-  ${c.dim}llm-council ask "What causes inflation?" --protocol vote${c.reset}
-  ${c.dim}llm-council cost --protocol debate --rounds 3${c.reset}
+  ${c.dim}llmcouncil status${c.reset}
+  ${c.dim}llmcouncil ask "What causes inflation?" --protocol vote${c.reset}
+  ${c.dim}llmcouncil cost --protocol debate --rounds 3${c.reset}
 `);
 }
 
-// ── Main ──────────────────────────────────────────────────────────────
+// Main
 
 async function main(): Promise<void> {
   const args = process.argv.slice(2);
